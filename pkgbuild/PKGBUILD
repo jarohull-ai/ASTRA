@@ -1,0 +1,16 @@
+pkgname=astramon
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Glass system telemetry dashboard'
+arch=('x86_64' 'aarch64')
+license=('MIT')
+depends=('qt6-base' 'qt6-declarative' 'qt6-wayland' 'qt6-svg')
+makedepends=('gcc' 'make')
+build() { cd "$startdir/.."; sh bin/build; }
+package() {
+ cd "$startdir/.."
+ install -Dm755 build/astramon "$pkgdir/usr/bin/astramon"
+ install -Dm644 pkgbuild/astramon.desktop "$pkgdir/usr/share/applications/astramon.desktop"
+ install -Dm644 pkgbuild/astramon.svg "$pkgdir/usr/share/icons/hicolor/scalable/apps/astramon.svg"
+ install -Dm644 LICENSE "$pkgdir/usr/share/licenses/astramon/LICENSE"
+}

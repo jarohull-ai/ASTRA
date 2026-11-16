@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=ASTRA System Monitor
+Name[pl]=ASTRA Monitor systemu
+Comment=Customizable glass telemetry dashboard
+Comment[pl]=Szklana konsola parametrów komputera
+Exec=astramon
+Icon=astramon
+Terminal=false
+Categories=System;Monitor;
+Keywords=system;monitor;cpu;gpu;ram;astra;
+StartupWMClass=astramon

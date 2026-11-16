@@ -1,0 +1,10 @@
+{
+ "Processor":"Procesor", "Memory":"Pamięć RAM", "Graphics":"Grafika", "Thermals":"Temperatura", "Storage":"Dysk", "Network":"Sieć",
+ "%1 logical cores · 1 s sampling":"%1 wątków · pomiar co 1 s",
+ "%1 GiB available / %2 GiB total":"%1 GiB wolne / %2 GiB łącznie",
+ "GPU engine utilization":"obciążenie GPU",
+ "GPU utilization unavailable from this driver":"Sterownik nie udostępnia obciążenia GPU",
+ "CPU · highest sensor reading (%1)":"CPU · najwyższy odczyt (%1)",
+ "CPU temperature sensor unavailable":"Czujnik temperatury CPU niedostępny",
+ "Root volume · %1 GiB free":"Partycja systemowa · %1 GiB wolne"
+}

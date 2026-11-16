@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+mkdir -p build/tests
+cd build/tests
+qmake6 ../../tests/tests.pro
+make -j4
+QT_QPA_PLATFORM=offscreen QT_QPA_PLATFORMTHEME=basic QT_QUICK_BACKEND=software QT_FORCE_STDERR_LOGGING=1 ./astramon-tests
