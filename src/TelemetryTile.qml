@@ -19,7 +19,7 @@ Rectangle {
  Rectangle {x:22;y:0;width:parent.width-44;height:1;color:Qt.rgba(.8,1,1,.25)}
  Rectangle {x:22;y:0;width:42;height:2;color:tile.accent}
  ColumnLayout {
-  anchors.fill: parent;anchors.margins:22;spacing:5
+  anchors.fill: parent;anchors.margins:tile.height<210?16:22;spacing:tile.height<210?3:5
   RowLayout {
    Layout.fillWidth:true
    Text {text: ("0"+(tile.serial+1)).slice(-2);color:tile.accent;font.family:"monospace";font.pixelSize:11}
@@ -29,15 +29,15 @@ Rectangle {
    ToolButton {text:"›";visible:tile.editing;implicitWidth:28;implicitHeight:28;onClicked:tile.moveRequested(1);ToolTip.text:qsTr("Przesuń dalej");ToolTip.visible:hovered}
    ToolButton {text:"×";visible:tile.editing;implicitWidth:28;implicitHeight:28;onClicked:tile.removeRequested();ToolTip.text:qsTr("Usuń kafelek");ToolTip.visible:hovered}
   }
-  RowLayout {spacing:8;Layout.topMargin:8
-   Text {text:tile.metric.value||"—";font.pixelSize:tile.height<250?42:50;font.weight:Font.Light;font.letterSpacing:-2;color:"#effaff"}
-   Text {text:tile.metric.unit||"";font.pixelSize:14;color:tile.accent;Layout.alignment:Qt.AlignBottom;Layout.bottomMargin:12}
+  RowLayout {spacing:8;Layout.topMargin:tile.height<210?0:8
+   Text {text:tile.metric.value||"—";font.pixelSize:tile.height<210?34:tile.height<250?42:50;font.weight:Font.Light;font.letterSpacing:-2;color:"#effaff"}
+   Text {text:tile.metric.unit||"";font.pixelSize:14;color:tile.accent;Layout.alignment:Qt.AlignBottom;Layout.bottomMargin:tile.height<210?8:12}
    Item {Layout.fillWidth:true}
   }
   Text {text:tile.metric.detail||"";font.pixelSize:11;color:"#8ca6b0";Layout.fillWidth:true;elide:Text.ElideRight;textFormat:Text.PlainText;ToolTip.text:text;ToolTip.visible:detailHover.hovered;HoverHandler{id:detailHover}}
-  Item {Layout.fillHeight:true;Layout.minimumHeight:8}
+  Item {Layout.fillHeight:true;Layout.minimumHeight:tile.height<210?2:8}
   Canvas {
-   id: graph;Layout.fillWidth:true;Layout.preferredHeight:tile.height<250?45:67
+   id: graph;Layout.fillWidth:true;Layout.preferredHeight:tile.height<210?32:tile.height<250?45:67
    property var samples:tile.metric.history||[]
    onSamplesChanged:requestPaint()
    onWidthChanged:requestPaint()

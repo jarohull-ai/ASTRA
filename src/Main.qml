@@ -56,7 +56,7 @@ ApplicationWindow {
       TelemetryTile {
        required property string modelData
        required property int index
-       Layout.fillWidth:true;Layout.preferredWidth:300;Layout.preferredHeight:Math.max(220,(scroll.availableHeight-16)/2)
+       Layout.fillWidth:true;Layout.preferredWidth:300;Layout.preferredHeight:Math.max(184,(scroll.availableHeight-16)/2)
        metric:{win.revision;return backend.card(modelData)}
        accent:win.accent;glass:backend.glass;editing:win.editing;serial:index
        onRemoveRequested:backend.toggle(modelData)
@@ -66,6 +66,7 @@ ApplicationWindow {
      Text {visible:backend.order.length===0;text:qsTr("Dodaj kafelki w ustawieniach ⚙");color:"#aec7d1";font.pixelSize:20;Layout.topMargin:40}
     }
    }
+   ParadoxPanel {Layout.fillWidth:true;Layout.preferredHeight:136;s:paradox.state;accent:win.accent;glass:backend.glass}
    RowLayout {Layout.fillWidth:true
     Text {text:qsTr("LOCAL SENSORS  /  1 Hz");color:"#678893";font.family:"monospace";font.pixelSize:10}
     Item {Layout.fillWidth:true}
