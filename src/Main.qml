@@ -35,19 +35,19 @@ ApplicationWindow {
     }
     Item {Layout.fillWidth:true}
     Text {text:win.clockText;color:"#9bb8c2";font.family:"monospace";font.pixelSize:15;visible:win.width>850}
-    ToolButton {text:backend.paused?qsTr("Wznów"):qsTr("Pauza");onClicked:backend.paused=!backend.paused}
-    Button {text:win.editing?qsTr("Gotowe"):qsTr("Edytuj układ");highlighted:win.editing;onClicked:win.editing=!win.editing}
-    ToolButton {text:"⚙";font.pixelSize:22;onClicked:settingsDrawer.open();ToolTip.text:qsTr("Wygląd i kafelki");ToolTip.visible:hovered}
+    ToolButton {text:backend.paused?qsTr("Resume"):qsTr("Pause");onClicked:backend.paused=!backend.paused}
+    Button {text:win.editing?qsTr("Done"):qsTr("Edit layout");highlighted:win.editing;onClicked:win.editing=!win.editing}
+    ToolButton {text:"⚙";font.pixelSize:22;onClicked:settingsDrawer.open();ToolTip.text:qsTr("Appearance and tiles");ToolTip.visible:hovered}
    }
    Rectangle {Layout.fillWidth:true;height:1;color:"#25414a"}
    RowLayout {Layout.fillWidth:true
     ColumnLayout {spacing:5
-     Text {text:qsTr("Centrum dowodzenia");color:"#e9f4f8";font.pixelSize:29;font.weight:Font.Light}
-     Text {text:win.editing?qsTr("Strzałki zmieniają kolejność · × usuwa kafelek · ustawienia dodają kafelki"):qsTr("Twój system. Jeden widok. Pełna kontrola.");color:"#7999a5";font.pixelSize:12;wrapMode:Text.WordWrap;Layout.maximumWidth:win.width-150}
+     Text {text:qsTr("Command center");color:"#e9f4f8";font.pixelSize:29;font.weight:Font.Light}
+     Text {text:win.editing?qsTr("Arrows reorder · × removes a tile · settings add tiles"):qsTr("Your system. One view. Full control.");color:"#7999a5";font.pixelSize:12;wrapMode:Text.WordWrap;Layout.maximumWidth:win.width-150}
     }
     Item {Layout.fillWidth:true}
     Rectangle {implicitWidth:102;implicitHeight:28;radius:14;color:"#122d2b";border.color:"#285a50";visible:win.width>950
-     Text {anchors.centerIn:parent;text:backend.paused?qsTr("●  PAUZA"):qsTr("●  ONLINE");color:win.accent;font.pixelSize:10;font.letterSpacing:1}
+     Text {anchors.centerIn:parent;text:backend.paused?qsTr("●  PAUSED"):qsTr("●  ONLINE");color:win.accent;font.pixelSize:10;font.letterSpacing:1}
     }
    }
    ScrollView {id:scroll;Layout.fillWidth:true;Layout.fillHeight:true;clip:true;contentWidth:availableWidth
@@ -63,14 +63,14 @@ ApplicationWindow {
        onMoveRequested:function(direction){backend.move(modelData,direction)}
       }
      }
-     Text {visible:backend.order.length===0;text:qsTr("Dodaj kafelki w ustawieniach ⚙");color:"#aec7d1";font.pixelSize:20;Layout.topMargin:40}
+     Text {visible:backend.order.length===0;text:qsTr("Add tiles in settings ⚙");color:"#aec7d1";font.pixelSize:20;Layout.topMargin:40}
     }
    }
    ParadoxPanel {Layout.fillWidth:true;Layout.preferredHeight:136;s:paradox.state;accent:win.accent;glass:backend.glass}
    RowLayout {Layout.fillWidth:true
     Text {text:qsTr("LOCAL SENSORS  /  1 Hz");color:"#678893";font.family:"monospace";font.pixelSize:10}
     Item {Layout.fillWidth:true}
-    Text {text:qsTr("E  układ     SPACE  pauza     ?  pomoc");color:"#678893";font.pixelSize:10}
+    Text {text:qsTr("E  layout     SPACE  pause     ?  help");color:"#678893";font.pixelSize:10}
    }
   }
  }
@@ -78,22 +78,27 @@ ApplicationWindow {
   id:settingsDrawer;edge:Qt.RightEdge;width:330;height:win.height
   background:Rectangle {color:"#101c24";border.color:"#36515c"}
   ColumnLayout {anchors.fill:parent;anchors.margins:24;spacing:14
-   Text {text:qsTr("Twoja konsola");color:"#e6f7ff";font.pixelSize:24}
-   Text {text:qsTr("Widoczne kafelki");color:win.accent;font.pixelSize:13}
-   Repeater {model:[{key:"cpu",name:qsTr("Procesor")},{key:"memory",name:qsTr("Pamięć RAM")},{key:"gpu",name:qsTr("Grafika")},{key:"thermal",name:qsTr("Temperatura CPU")},{key:"disk",name:qsTr("Dysk systemowy")},{key:"network",name:qsTr("Sieć")}]
+   Text {text:qsTr("Your console");color:"#e6f7ff";font.pixelSize:24}
+   Text {text:qsTr("Visible tiles");color:win.accent;font.pixelSize:13}
+   Repeater {model:[{key:"cpu",name:qsTr("Processor")},{key:"memory",name:qsTr("Memory")},{key:"gpu",name:qsTr("Graphics")},{key:"thermal",name:qsTr("CPU temperature")},{key:"disk",name:qsTr("System disk")},{key:"network",name:qsTr("Network")}]
     CheckBox {required property var modelData;text:modelData.name;checked:backend.order.indexOf(modelData.key)>=0;onClicked:backend.toggle(modelData.key);Layout.preferredHeight:32}
    }
-   Text {text:qsTr("Kolor światła");color:win.accent;font.pixelSize:13}
-   ComboBox {Layout.fillWidth:true;model:["Omarchy","Ice blue","Amber"];currentIndex:["omarchy","ice","amber"].indexOf(backend.palette);onActivated:backend.palette=["omarchy","ice","amber"][currentIndex]}
-   Text {text:qsTr("Gęstość szkła");color:win.accent;font.pixelSize:13}
+   Text {text:qsTr("Language");color:win.accent;font.pixelSize:13}
+   ComboBox {id:langBox;Layout.fillWidth:true;readonly property var codes:["auto","en","pl"]
+    model:[qsTr("Automatic (Omarchy)"),"English","Polski"]
+    currentIndex:Math.max(0,codes.indexOf(i18n.choice))
+    onActivated:i18n.choice=codes[currentIndex]}
+   Text {text:qsTr("Light colour");color:win.accent;font.pixelSize:13}
+   ComboBox {Layout.fillWidth:true;model:["Omarchy",qsTr("Ice blue"),qsTr("Amber")];currentIndex:["omarchy","ice","amber"].indexOf(backend.palette);onActivated:backend.palette=["omarchy","ice","amber"][currentIndex]}
+   Text {text:qsTr("Glass density");color:win.accent;font.pixelSize:13}
    Slider {Layout.fillWidth:true;from:.45;to:.98;value:backend.glass;onMoved:backend.glass=value}
-   Text {text:qsTr("Przezroczystość jest rzeczywista. Rozmycie tła zależy od ustawień Hyprlanda.");color:"#8eaab5";font.pixelSize:12;wrapMode:Text.WordWrap;Layout.fillWidth:true}
-   Button {text:qsTr("Przywróć domyślny układ");onClicked:backend.reset()}
+   Text {text:qsTr("Transparency is real. Background blur depends on your Hyprland settings.");color:"#8eaab5";font.pixelSize:12;wrapMode:Text.WordWrap;Layout.fillWidth:true}
+   Button {text:qsTr("Restore default layout");onClicked:backend.reset()}
    Item {Layout.fillHeight:true}
-   Button {text:qsTr("Zamknij ustawienia");onClicked:settingsDrawer.close()}
+   Button {text:qsTr("Close settings");onClicked:settingsDrawer.close()}
   }
  }
  Popup {id:help;anchors.centerIn:parent;width:380;modal:true;padding:24
-  ColumnLayout {spacing:12;Text {text:qsTr("Sterowanie ASTRA");color:"white";font.pixelSize:22} Text {text:qsTr("E — edytuj kolejność i usuń kafelki\nSpace — wstrzymaj odczyty\nQ — zamknij\n⚙ — dodaj kafelki, zmień kolor i szkło\n\nUkład i wygląd zapisują się automatycznie.");color:"#b9d0d9";font.pixelSize:13} Button {text:qsTr("Rozumiem");onClicked:help.close()}}
+  ColumnLayout {spacing:12;Text {text:qsTr("ASTRA controls");color:"white";font.pixelSize:22} Text {text:qsTr("E — reorder and remove tiles\nSpace — pause readings\nQ — quit\n⚙ — add tiles, change colour, glass and language\n\nLayout and appearance are saved automatically.");color:"#b9d0d9";font.pixelSize:13} Button {text:qsTr("Got it");onClicked:help.close()}}
  }
 }

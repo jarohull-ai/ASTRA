@@ -6,6 +6,7 @@
 #include <QQuickStyle>
 #include "backend.h"
 #include "paradox.h"
+#include "translator.h"
 #include <QCryptographicHash>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -33,7 +34,12 @@ private slots:
   for(auto line:in.readAll().split('\n')){if(line.trimmed().isEmpty())continue;auto o=QJsonDocument::fromJson(line).object();QCOMPARE(o["prev_hash"].toString(),prev);QString rec=o["entry_hash"].toString();o.remove("entry_hash");
    QCryptographicHash h(QCryptographicHash::Sha256);h.addData(prev.toUtf8());h.addData(QJsonDocument(o).toJson(QJsonDocument::Compact));QCOMPARE(QString::fromLatin1(h.result().toHex()),rec);QCOMPARE(o["counter"].toInt(),count);prev=rec;count++;}
   QCOMPARE(count,5);}
- void realWindow(){QQuickStyle::setStyle("Material");Backend b;b.reset();QTemporaryDir pd;Paradox px(nullptr,pd.path()+"/p.jsonl",false);QQmlApplicationEngine e;e.rootContext()->setContextProperty("backend",&b);e.rootContext()->setContextProperty("paradox",&px);e.load(QUrl("qrc:/Main.qml"));QVERIFY(!e.rootObjects().isEmpty());auto w=qobject_cast<QQuickWindow*>(e.rootObjects().first());QVERIFY(w);QTest::qWait(200);QTest::keyClick(w,Qt::Key_E);QCOMPARE(w->property("editing").toBool(),true);QTest::keyClick(w,Qt::Key_Space);QVERIFY(b.paused());w->resize(720,600);QTest::qWait(150);QVERIFY(!w->grabWindow().isNull());}
+ void languageSwitch(){QTemporaryDir d;Translator t(d.path()+"/lang");QCoreApplication::installTranslator(&t);
+  t.setChoice("pl");QCOMPARE(t.language(),QString("pl"));QCOMPARE(QCoreApplication::translate("x","Edit layout"),QString("Edytuj układ"));QCOMPARE(QCoreApplication::translate("x","Processor"),QString("Procesor"));
+  t.setChoice("en");QCOMPARE(t.language(),QString("en"));QCOMPARE(QCoreApplication::translate("x","Edit layout"),QString("Edit layout"));
+  t.setChoice("auto");QCOMPARE(t.choice(),QString("auto"));QCOMPARE(t.language(),QString("en"));t.setChoice("bogus!");QCOMPARE(t.choice(),QString("auto"));
+  QCoreApplication::removeTranslator(&t);}
+ void realWindow(){QQuickStyle::setStyle("Material");Backend b;b.reset();QTemporaryDir pd;Paradox px(nullptr,pd.path()+"/p.jsonl",false);Translator tr(pd.path()+"/none");QQmlApplicationEngine e;e.rootContext()->setContextProperty("backend",&b);e.rootContext()->setContextProperty("paradox",&px);e.rootContext()->setContextProperty("i18n",&tr);e.load(QUrl("qrc:/Main.qml"));QVERIFY(!e.rootObjects().isEmpty());auto w=qobject_cast<QQuickWindow*>(e.rootObjects().first());QVERIFY(w);QTest::qWait(200);QTest::keyClick(w,Qt::Key_E);QCOMPARE(w->property("editing").toBool(),true);QTest::keyClick(w,Qt::Key_Space);QVERIFY(b.paused());w->resize(720,600);QTest::qWait(150);QVERIFY(!w->grabWindow().isNull());}
 };
 QTEST_MAIN(Tests)
 #include "tests.moc"

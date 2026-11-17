@@ -106,7 +106,7 @@ void Translator::reload() {
         m_watcher.addPath(m_languageFile);
 
     // Catalogs are compiled in, so only a different language needs a reload.
-    const QString language = readLanguage(m_languageFile);
+    const QString language = m_choice == "auto" ? readLanguage(m_languageFile) : m_choice;
     if (language == m_language)
         return;
 
@@ -134,4 +134,16 @@ void Translator::reload() {
     QLocale::setDefault(locale);
     QGuiApplication::setLayoutDirection(locale.textDirection());
     emit changed();
+}
+
+void Translator::setChoice(const QString &choice) {
+    static const QRegularExpression valid("^[a-z]{2,3}(-[A-Za-z]{2})?$");
+    const QString next = valid.match(choice).hasMatch() ? choice : QStringLiteral("auto");
+    if (next == m_choice)
+        return;
+    m_choice = next;
+    const QString before = m_language;
+    reload();
+    if (m_language == before)
+        emit changed();
 }

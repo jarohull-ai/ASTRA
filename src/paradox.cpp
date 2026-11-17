@@ -87,6 +87,7 @@ void Paradox::ingest(const NetMetrics &m){
  streak=v.critical?streak+1:0;
  QString st=v.critical?"critical":v.breached.isEmpty()?"healthy":"degraded";
  health.append(v.score);while(health.size()>90)health.removeFirst();
+ latencies.append(m.ping?m.latency:0.0);while(latencies.size()>90)latencies.removeFirst();
  bool armed=streak>=3; // streak guard: action only after 3 consecutive critical states
  QString action=r.valid?r.name:QString();
  if(st!=lastState||(!action.isEmpty()&&streak==3)){
@@ -98,7 +99,7 @@ void Paradox::ingest(const NetMetrics &m){
  snapshot["latency"]=m.latency;snapshot["loss"]=m.loss;snapshot["jitter"]=m.jitter;snapshot["bandwidth"]=m.bandwidth;
  snapshot["sensors"]=QVariantMap{{"ping",m.ping},{"tcp",m.tcp},{"interfaces",m.interfaces},{"routes",m.routes}};
  snapshot["gradient"]=g;snapshot["streak"]=streak;snapshot["armed"]=armed&&r.valid;snapshot["level"]=r.valid?r.level:"L0";snapshot["action"]=action;snapshot["actionReason"]=r.reason;
- snapshot["entries"]=counter;snapshot["history"]=health;snapshot["target"]=target;
+ snapshot["entries"]=counter;snapshot["history"]=health;snapshot["latencyHistory"]=latencies;snapshot["target"]=target;
  emit changed();
 }
 // SHA-256 hash chain, byte-compatible with `jfp-paradox verify-chain` (sorted keys, compact JSON, zero seed).

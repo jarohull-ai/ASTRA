@@ -46,6 +46,6 @@ private:
  double pAvg=0,pMdev=0,pLoss=100;
  quint64 lastBytes=0;QElapsedTimer bwClock;
  bool hasPrev=false;NetMetrics prev;QString lastState;
- QVariantList health;
+ QVariantList health,latencies;
  QVariantMap snapshot;
 };

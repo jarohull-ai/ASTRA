@@ -16,12 +16,16 @@
 class Translator : public QTranslator {
     Q_OBJECT
     Q_PROPERTY(QString language READ language NOTIFY changed)
+    Q_PROPERTY(QString choice READ choice WRITE setChoice NOTIFY changed)
 
 public:
     explicit Translator(const QString &languageFile = {}, const QString &catalogDirectory = ":/i18n",
                         QObject *parent = nullptr);
 
     QString language() const { return m_language; }
+    // "auto" follows Omarchy; any language code (en, pl) pins it. Persisted by the caller.
+    QString choice() const { return m_choice; }
+    void setChoice(const QString &choice);
     bool isEmpty() const override { return m_strings.isEmpty(); }
     QString translate(const char *context, const char *sourceText, const char *disambiguation = nullptr,
                       int n = -1) const override;
@@ -39,6 +43,7 @@ private:
     QString m_languageFile;
     QString m_catalogDirectory;
     QString m_language;
+    QString m_choice = "auto";
     QHash<QString, QJsonValue> m_strings;
     QFileSystemWatcher m_watcher;
     QTimer m_debounce;
