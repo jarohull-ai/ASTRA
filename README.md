@@ -1,11 +1,22 @@
 # ASTRA
 
-Native Qt Quick system dashboard with translucent glass tiles, live Omarchy accent, Ice and Amber palettes. CPU, RAM, GPU (sysfs-compatible drivers), CPU temperature, root volume usage, and combined traffic on active network interfaces. No network requests, accounts or services.
+![ASTRA with the JFP Paradox strip](docs/screenshot.png)
+
+Native Qt Quick system dashboard with translucent glass tiles, live Omarchy accent, Ice and Amber palettes. CPU, RAM, GPU (sysfs-compatible drivers), CPU temperature, root volume usage, and combined traffic on active network interfaces, plus a JFP Paradox network-governance strip. No accounts or services.
 
 Build: `sh bin/build`. Test: `sh bin/test`. Run: `build/astramon`.
 Package: `cd pkgbuild && makepkg -f`; install the resulting package with pacman.
 
 On this computer the app is installed per-user at `~/.local/bin/astramon`, with its launcher and icon in `~/.local/share`. The Arch package is also available in `pkgbuild/`. System-wide installation was not completed because authentication was pending.
+
+## JFP Paradox strip
+
+The bottom strip embeds [JFP Paradox](https://github.com/jarohull-ai/jfp-paradox) network governance. The Governor constitution and Supervisor rules are ported 1:1 from `jfp-paradox` rust-core v0.2.0 (`src/paradox.cpp`).
+
+- Shows network health score (0–100), state (healthy / degraded / critical), latency, packet loss, jitter, link utilisation (when the driver reports link speed), breached thresholds, the Supervisor recommendation (L2/L3) with the 3-sample streak guard, and a 7.5-minute health history.
+- **Dry run only:** recommended actions are displayed and logged, never executed.
+- **Network probes:** every 5 s, 5 ICMP pings and one TCP connect to `8.8.8.8:443`. Change the target in `~/.config/astramon/astramon.conf` with `paradox/target=` and `paradox/tcpPort=` (e.g. your router). Pause (Space) also pauses the probes.
+- **Proof chain:** state changes and recommendations go to a SHA-256 hash chain in `~/.local/state/astramon/paradox_proof.jsonl`, compatible with `jfp-paradox verify-chain`.
 
 Use Settings to add/remove tiles and adjust opacity/colour. Edit layout exposes move-left, move-right and remove buttons. Settings persist in `~/.config/astramon/astramon.conf`.
 
